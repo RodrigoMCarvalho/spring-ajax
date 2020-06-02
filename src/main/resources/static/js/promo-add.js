@@ -18,6 +18,16 @@ $("#form-add-promo").submit(function(evt) {
         url: "/promocao/save",
         data: promo,
         beforeSend: function() {
+            //removendo as mensagens de validacao das classes error-span
+            $("span").closest('.error-span').remove();
+
+            //removendo as bordas vermelhas
+            $("#categoria").removeClass("is-invalid");
+            $("#preco").removeClass("is-invalid");
+            $("#linkPromocao").removeClass("is-invalid");
+            $("#titulo").removeClass("is-invalid");
+
+            //habilita o loading
             $("#form-add-promo").hide();
             $("#loader-form").addClass("loader").show();
         },
@@ -27,7 +37,22 @@ $("#form-add-promo").submit(function(evt) {
             });
             $("#site").text("");
             $("#linkImagem").attr("src", "/images/promo-dark.png");
-            $("#alert").addClass("alert alert-success").text("Ok!Promoção cadastrada com sucesso!");
+            $("#alert")
+                .removeClass("alert alert-danger")  /*remove a cor vermelha após validacao e novo salvamento*/
+                .addClass("alert alert-success")
+                .text("Ok! Promoção cadastrada com sucesso!");
+        },
+        statusCode: {
+            422: function(xhr) {
+                console.log("status error: ", xhr.status);
+                var errors = $.parseJSON(xhr.responseText);
+                $.each(errors, function(key, value) {
+                    $("#"+ key).addClass("is-invalid");
+                    $("#error-" + key)
+                        .addClass("invalid-feedback")
+                        .append("<span class='error-span'>" + value + "</span>");
+                });
+            }
         },
         error: function(xhr) {
             console.log("erro: ", xhr.responseText)

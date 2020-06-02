@@ -3,9 +3,10 @@ package com.rodrigo.springajax.domain;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,9 +17,11 @@ public class Promocao implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Um título é requerido.")
     @Column(name="titulo", nullable = false)
     private String titulo;
 
+    @NotBlank(message = "O link da promoção é requerido.")
     @Column(name="link_promocao", nullable = false)
     private String LinkPromocao;
 
@@ -31,6 +34,7 @@ public class Promocao implements Serializable {
     @Column(name="link_imagem", nullable = false)
     private String linkImagem;
 
+    @NotNull(message = "O preço é requerido.")
     @NumberFormat(style = NumberFormat.Style.CURRENCY,pattern = "#,##0.00")
     @Column(name="preco_promocao", nullable = false)
     private BigDecimal preco;
@@ -41,6 +45,7 @@ public class Promocao implements Serializable {
     @Column(name="data_cadastro", nullable = false)
     private LocalDateTime dtCadastro;
 
+    @NotNull(message = "A categoria é requerido.")
     @ManyToOne
     @JoinColumn(name="categoria_fk")
     private Categoria categoria;
