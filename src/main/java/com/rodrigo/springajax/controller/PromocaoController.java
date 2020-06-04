@@ -66,6 +66,13 @@ public class PromocaoController {
         return "promo-card";
     }
 
+    @PostMapping("/likes/{id}")
+    public ResponseEntity<?> adicionarLikes(@PathVariable("id") Long id) {
+        promocaoRepository.updateSomarLikes(id);
+        int likes = promocaoRepository.findLikesById(id);
+        return ResponseEntity.ok(likes);
+    }
+
     @ModelAttribute("categorias")
     public List<Categoria> getCategorias() {
         return categoriaRepository.findAll();
