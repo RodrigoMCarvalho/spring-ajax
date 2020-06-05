@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,10 +60,31 @@ public class PromocaoController {
     }
 
     @GetMapping("/list/ajax")
-    public String listarCards(@RequestParam(name = "page", defaultValue = "1") int page, ModelMap model ) {
+    public String listarCards(@RequestParam(name = "page", defaultValue = "1") int page,
+                              @RequestParam(name = "site", defaultValue = "") String site,
+                              ModelMap model) {
         Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");
         PageRequest pageRequest = PageRequest.of(page,8,sort);
-        model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
+
+        if(site.isEmpty()) {  //caso não tenha sido informado o site na busca
+            model.addAttribute("promocoes", promocaoRepository.findAll(pageRequest));
+        } else {
+            model.addAttribute("promocoes", promocaoRepository.findBySite(site, pageRequest));
+        }
+        return "promo-card";
+    }
+
+    @GetMapping("/site")
+    public ResponseEntity<?> autocompleteByTermo(@RequestParam(name = "termo") String termo) {
+        List<String> sites = promocaoRepository.findSiteByTermo(termo);
+        return ResponseEntity.ok(sites);
+    }
+
+    @GetMapping("/site/list")
+    public String listarPorSites(@RequestParam("site") String site, ModelMap model) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");
+        PageRequest pageRequest = PageRequest.of(0 ,8,sort);
+        model.addAttribute("promocoes", promocaoRepository.findBySite(site, pageRequest));
         return "promo-card";
     }
 
