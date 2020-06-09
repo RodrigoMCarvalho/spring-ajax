@@ -4,6 +4,7 @@ import com.rodrigo.springajax.domain.Categoria;
 import com.rodrigo.springajax.domain.Promocao;
 import com.rodrigo.springajax.repository.CategoriaRepository;
 import com.rodrigo.springajax.repository.PromocaoRepository;
+import com.rodrigo.springajax.service.PromocaoDatatableService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -95,6 +97,12 @@ public class PromocaoController {
         return ResponseEntity.ok(likes);
     }
 
+    @GetMapping("datatables/server")
+    public ResponseEntity<?> datatables(HttpServletRequest request) {
+        Map<String, Object> data = new PromocaoDatatableService().execute(promocaoRepository, request);
+        return ResponseEntity.ok(data);
+    }
+
     @ModelAttribute("categorias")
     public List<Categoria> getCategorias() {
         return categoriaRepository.findAll();
@@ -103,5 +111,10 @@ public class PromocaoController {
     @GetMapping("/add")
     public String abrirCadastro() {
         return "promo-add";
+    }
+
+    @GetMapping("/tabela")
+    public String abrirTabela() {
+        return "promo-datatables";
     }
 }
