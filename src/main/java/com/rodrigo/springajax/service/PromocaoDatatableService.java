@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,10 +30,11 @@ public class PromocaoDatatableService {
 
         String column = columnName(request);
         Direction direction = orderBy(request);
+        String search = searchBy(request);
 
         Pageable pageable = PageRequest.of(current, length, direction, column);
 
-        Page<Promocao> page = queryBy(repository, pageable);
+        Page<Promocao> page = queryBy(search, repository, pageable);
 
         Map<String, Object> json = new LinkedHashMap<>();
         json.put("draw", draw);
@@ -43,10 +45,24 @@ public class PromocaoDatatableService {
         return json;
     }
 
-    private Page<Promocao> queryBy(PromocaoRepository repository, Pageable pageable) {
-        return repository.findAll(pageable);
+    private Page<Promocao> queryBy(String search, PromocaoRepository repository, Pageable pageable) {
+        if(search.isEmpty()) {
+            return repository.findAll(pageable);
+        }
+        if(search.matches("^[0-9]+([.,][0-9]{2})?$")) {
+            search = search.replace(",",".");
+            return repository.findByPreco(new BigDecimal(search), pageable);
+        }
+        return repository.findByTituloOrSiteOrCategoria(search, pageable);
     }
 
+    private String searchBy(HttpServletRequest request) {
+        if(request.getParameter("search[value]").isEmpty()) {
+            return "";
+        } else {
+            return request.getParameter("search[value]");
+        }
+    }
 
     private Direction orderBy(HttpServletRequest request) {
         String order = request.getParameter("order[0][dir]");
@@ -65,6 +81,6 @@ public class PromocaoDatatableService {
     private int currentPage(int start, int length) {
         //0       1         2
         //0-9  |  10-19   | 20-29
-        return start * length;
+        return start / length;
     }
 }

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    moment.locale('pt-br');
     $("#table-server").DataTable({
         processing: true,
         serverSide: true,
@@ -15,10 +16,44 @@ $(document).ready(function() {
             {data: 'linkPromocao'},
             {data: 'descricao'},
             {data: 'linkImagem'},
-            {data: 'preco'},
+            {data: 'preco', render: $.fn.dataTable.render.number('.', ',', 2, 'R$')},
             {data: 'likes'},
-            {data: 'dtCadastro'},
+            {data: 'dtCadastro', render:
+                        function(dtCadastro) {
+                            return moment(dtCadastro).format("LLL");
+                        }
+            },
             {data: 'categoria.titulo'}
+        ],
+        buttoms: [
+            {
+                text: 'Editar',
+                attr: {
+                    id: 'btn-editar',
+                    type: 'buttom'
+                }
+            },
+            dom: 'Bfrtip',  /*referente a lib Datatables*/
+            {
+               text: 'Excluir',
+               attr: {
+                   id: 'btn-excluir',
+                   type: 'buttom'
+               }
+            }
         ]
     });
+
+    $("#btn-editar").on('click', function() {
+         alert("Clique no botao Editar");
+    })
+
+    $("#btn-excluir").on('click', function() {
+         alert("Clique no botao Excluir");
+    })
+
+
+
+
+
 });

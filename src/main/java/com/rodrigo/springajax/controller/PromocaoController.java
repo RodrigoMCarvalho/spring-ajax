@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +96,7 @@ public class PromocaoController {
         return ResponseEntity.ok(likes);
     }
 
-    @GetMapping("datatables/server")
+    @GetMapping("/datatables/server")
     public ResponseEntity<?> datatables(HttpServletRequest request) {
         Map<String, Object> data = new PromocaoDatatableService().execute(promocaoRepository, request);
         return ResponseEntity.ok(data);
