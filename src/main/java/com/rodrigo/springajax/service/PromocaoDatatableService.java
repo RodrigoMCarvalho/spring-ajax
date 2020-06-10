@@ -21,7 +21,7 @@ public class PromocaoDatatableService {
     };
 
     public Map<String, Object> execute(PromocaoRepository repository, HttpServletRequest request) {
-
+        System.out.println(request.getContentType());
         int start = Integer.parseInt(request.getParameter("start"));
         int length = Integer.parseInt(request.getParameter("length"));
         int draw = Integer.parseInt(request.getParameter("draw"));
@@ -57,7 +57,7 @@ public class PromocaoDatatableService {
     }
 
     private String searchBy(HttpServletRequest request) {
-        if(request.getParameter("search[value]").isEmpty()) {
+        if(request.getParameter("search[value]").isEmpty()) {   //se o parametro search do DataTable tiver vazio
             return "";
         } else {
             return request.getParameter("search[value]");

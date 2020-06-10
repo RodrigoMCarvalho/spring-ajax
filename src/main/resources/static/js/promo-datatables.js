@@ -1,6 +1,6 @@
 $(document).ready(function() {
     moment.locale('pt-br');
-    $("#table-server").DataTable({
+    var table = $("#table-server").DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -25,27 +25,47 @@ $(document).ready(function() {
             },
             {data: 'categoria.titulo'}
         ],
-        buttoms: [
+        dom: 'Bfrtip',  /*referente a lib Datatables*/
+        buttons: [
             {
                 text: 'Editar',
                 attr: {
                     id: 'btn-editar',
-                    type: 'buttom'
-                }
+                    type: 'button'
+                },
+                enabled: false
             },
-            dom: 'Bfrtip',  /*referente a lib Datatables*/
             {
                text: 'Excluir',
                attr: {
                    id: 'btn-excluir',
-                   type: 'buttom'
-               }
+                   type: 'button'
+               },
+               enabled: false
             }
         ]
     });
 
+    //ação para marcar/desmarcar botões ao clicar na ordenação
+    $("#table-server thead").on('click', 'tr', function() {
+      table.buttons().disable();
+    });
+
+    //ação para marcar/desmarcar linhas clicadas
+    $("#table-server tbody").on('click', 'tr', function() {
+        if($(this).hasClass('selected')) {   /* remove a seleção com o 2º clique na mesma linha*/
+            $(this).removeClass('selected');
+            table.buttons().disable();   /* referente a lib DataTables*/
+        } else {
+            $('tr.selected').removeClass('selected');   /* remove a seleção caso o usuário selecione uma nova linha */
+            $(this).addClass('selected');
+            table.buttons().enable();
+        }
+    });
+
     $("#btn-editar").on('click', function() {
-         alert("Clique no botao Editar");
+        var id = table.row(table.$('tr.selected')).data().id;
+        alert("Clique no botao Editar: " + id);
     })
 
     $("#btn-excluir").on('click', function() {
