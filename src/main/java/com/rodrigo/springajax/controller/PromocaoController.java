@@ -52,6 +52,12 @@ public class PromocaoController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("delete/{id}")
+    public ResponseEntity<?> excluirPromocao(@PathVariable("id") Long id) {
+        promocaoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/list")
     public String listarOfertas(ModelMap model) {
         Sort sort = Sort.by(Sort.Direction.DESC, "dtCadastro");

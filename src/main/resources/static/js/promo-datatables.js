@@ -64,15 +64,43 @@ $(document).ready(function() {
     });
 
     $("#btn-editar").on('click', function() {
-        var id = table.row(table.$('tr.selected')).data().id;
-        alert("Clique no botao Editar: " + id);
-    })
+        if(isSelectedRow()) {
+            $("#modal-form").modal('show');
+            var id = getPromoId();
+        }
+    });
 
+    //ação do botão excluir (abrir modal)
     $("#btn-excluir").on('click', function() {
-         alert("Clique no botao Excluir");
-    })
+         if(isSelectedRow()) {
+            $("#modal-delete").modal('show');
+          }
+    });
 
+    //exclusão de uma promoção
+    $("#btn-del-modal").on('click', function() {
+        var id = getPromoId();
+        $.ajax({
+            method: "GET",
+            url: "/promocao/delete/" + id,
+            success: function() {
+                $("#modal-delete").modal("hide");
+                table.ajax.reload();
+            },
+            error: function() {
+                alert("Ops...ocorreu um erro, tenta novamente mais tarde.")
+            }
+        });
+    });
 
+    function getPromoId() {
+        return table.row(table.$('tr.selected')).data().id;
+    }
+
+    function isSelectedRow() {
+        var trow = table.row(table.$('tr.selected'));
+        return trow.data() !== undefined;
+    }
 
 
 
