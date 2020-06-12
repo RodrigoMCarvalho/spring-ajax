@@ -2,6 +2,7 @@ package com.rodrigo.springajax.controller;
 
 import com.rodrigo.springajax.domain.Categoria;
 import com.rodrigo.springajax.domain.Promocao;
+import com.rodrigo.springajax.dto.PromocaoDTO;
 import com.rodrigo.springajax.repository.CategoriaRepository;
 import com.rodrigo.springajax.repository.PromocaoRepository;
 import com.rodrigo.springajax.service.PromocaoDatatableService;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/promocao")
@@ -52,9 +54,36 @@ public class PromocaoController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("delete/{id}")
+    @GetMapping("/delete/{id}")
     public ResponseEntity<?> excluirPromocao(@PathVariable("id") Long id) {
         promocaoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/edit/{id}")
+    public ResponseEntity<?> preEditarPromocao(@PathVariable("id") Long id) {
+        Promocao promocao = promocaoRepository.findById(id).get();
+        return ResponseEntity.ok(promocao);
+    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<?> editarPromocao(@Valid PromocaoDTO dto, BindingResult result) {
+        if(result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error: result.getFieldErrors()){
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.unprocessableEntity().body(errors);
+        }
+        Promocao promocao = promocaoRepository.findById(dto.getId()).get();
+        promocao.setTitulo(dto.getTitulo());
+        promocao.setCategoria(dto.getCategoria());
+        promocao.setDescricao(dto.getDescricao());
+        promocao.setLinkImagem(dto.getLinkImagem());
+        promocao.setPreco(dto.getPreco());
+
+        promocaoRepository.save(promocao);
+
         return ResponseEntity.ok().build();
     }
 
