@@ -11,7 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface PromocaoRepository extends JpaRepository<Promocao, Long> {
@@ -37,5 +39,12 @@ public interface PromocaoRepository extends JpaRepository<Promocao, Long> {
 
     @Query("SELECT p FROM Promocao p WHERE p.preco = :preco")
     Page<Promocao> findByPreco(@Param("preco")BigDecimal preco, Pageable pageable);
+
+    @Query("SELECT p.dtCadastro FROM Promocao p")
+    Page<LocalDateTime> findUltimaDataDePromocao(Pageable pageable);
+
+    @Query("SELECT count(p.id) AS count, MAX(p.dtCadastro) AS lastDate " +
+            "FROM Promocao p WHERE p.dtCadastro > :data")
+    Map<String, Object> totalAndUltimaPromocaoByDataCadastro(@Param("data") LocalDateTime data);
 
 }
