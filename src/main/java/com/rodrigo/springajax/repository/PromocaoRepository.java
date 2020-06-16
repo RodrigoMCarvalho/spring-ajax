@@ -43,7 +43,7 @@ public interface PromocaoRepository extends JpaRepository<Promocao, Long> {
     @Query("SELECT p.dtCadastro FROM Promocao p")
     Page<LocalDateTime> findUltimaDataDePromocao(Pageable pageable);
 
-    @Query("SELECT count(p.id) AS count, MAX(p.dtCadastro) AS lastDate " +
+    @Query("SELECT COUNT(p.id) AS count, MAX(p.dtCadastro) AS lastDate " +
             "FROM Promocao p WHERE p.dtCadastro > :data")
     Map<String, Object> totalAndUltimaPromocaoByDataCadastro(@Param("data") LocalDateTime data);
 
