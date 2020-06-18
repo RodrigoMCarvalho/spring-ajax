@@ -207,30 +207,5 @@ $(document).ready(function() {
         $(".is-invalid").removeClass("is-invalid");
     }
 
-    /***** AJAX Reverse *****/
-
-    var totalOfertas = 0;
-
-    function init() {
-        console.log("dwr init");
-
-        dwr.engine.setActiveReserveAjax(true);
-        dwr.engine.setErrorHandler(error);
-
-        DWRAlertPromocoes.init();
-    }
-
-    function error(exception) {
-        console.log("dwr error: ", exception);
-    }
-
-    function showButton(count) {
-        totalOfertas = totalOfertas + count;
-        $("#btn-alert").show(function() {
-            $(this)
-                .attr("style", "display: block")
-                .text("Veja " + totalOfertas + " nova(s) oferta(s)!");
-        });
-    }
-
+    
 }); 

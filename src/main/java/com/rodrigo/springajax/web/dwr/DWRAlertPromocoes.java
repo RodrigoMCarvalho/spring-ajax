@@ -26,7 +26,7 @@ public class DWRAlertPromocoes {
     private Timer timer;
 
     private LocalDateTime getDtCadastroByUltimaPromocao() {
-        PageRequest pageRequest = PageRequest.of(0,1, Direction.ASC, "dtCadastro");
+        PageRequest pageRequest = PageRequest.of(0,1, Direction.DESC, "dtCadastro"); //traga a data mais recente
         return promocaoRepository.findUltimaDataDePromocao(pageRequest)
                 .getContent()
                 .get(0);
@@ -75,7 +75,7 @@ public class DWRAlertPromocoes {
                                         + " <" + calendar.getTime() + ">");
 
                    if(count > 0) {
-                       ScriptSessions.addFunctionCall("showButton", count); //nome da função de promo-datatables.js
+                       ScriptSessions.addFunctionCall("showButton", count); //nome da função de promo-list.js
                    }
                }
            });

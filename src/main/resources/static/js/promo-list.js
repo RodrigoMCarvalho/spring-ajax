@@ -117,3 +117,33 @@ $(document).on("click", "button[id*='likes-btn-']", function() {
         }
     });
 });
+
+/***** AJAX Reverse *****/
+var totalOfertas = 0;
+
+$(document).ready(function() {
+    init();
+});
+
+
+function init() {
+    console.log("dwr init");
+
+    dwr.engine.setActiveReverseAjax(true);
+    dwr.engine.setErrorHandler(error);
+
+    DWRAlertPromocoes.init();
+}
+
+function error(exception) {
+    console.log("dwr error: ", exception);
+}
+
+function showButton(count) {
+    totalOfertas = totalOfertas + count;
+    $("#btn-alert").show(function() {
+        $(this)
+            .attr("style", "display: block")
+            .text("Veja " + totalOfertas + " nova(s) oferta(s)!");
+    });
+}
